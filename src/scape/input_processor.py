@@ -64,7 +64,7 @@ NOTE:
 @click.option(
     '--chunksize',
     type=int,
-    default=1000,
+    default=100,
     help='Number of UTR regions included in each sub-file, which contains preprocessed input file for APA analysis.'
     )
 # @click.option(
