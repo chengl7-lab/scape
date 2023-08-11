@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "scape"
+name = "scape-apa"
 version = "1.0.0"
 authors = [
   { name="Guangzhao Cheng, Tien Le, Lu Cheng. Department of Computer Science, Aalto University.", email="lu.cheng.ac@gmail.com" },
@@ -34,5 +34,5 @@ dependencies = [
 scape = "scape:main"
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/sampleproject"
-"Bug Tracker" = "https://github.com/pypa/sampleproject/issues"
+"Homepage" = "https://github.com/chengl7-lab/scape"
+"Bug Tracker" = "https://github.com/chengl7-lab/scape/issues"
