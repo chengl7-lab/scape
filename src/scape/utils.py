@@ -441,8 +441,6 @@ CHANGES:
     default="None",
     help='Name of res pickle file that contains PASs for calculating expected PA length. Its name will be included in the file name of final result.'
     )
-# TODO: WHAT IS THE ROLE OF pkl_input_dir HERE? HOW CAN WE ENSURE THAT THERE IS barcode_index.csv IN THIS DIRECTORY? CONSIDER SPECIFY THE BARCODE FILE DIRECTLY?
-#def apacount(pkl_input_dir: str, pkl_output_dir: str):
 def ex_pa_cnt_mat(output_dir: str, res_pkl_file: str):
     """
     INPUT:

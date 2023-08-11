@@ -47,7 +47,8 @@ NOTE:
     '--cb_file',
     type=str,
     default="None",
-    help='Path to barcode.tsv.gz which includes all desired barcodes (output of CellRanger). This file must be consistent with CB tag in bam_file file'
+    help='Path to barcode.tsv.gz which includes all desired barcodes (output of CellRanger). This file must be consistent with CB tag in bam_file file',
+    required=True
     )
 @click.option(
     '--bam_file',
@@ -88,9 +89,9 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
             Example of file name: Chr1.100.1.input.pkl
             Dataframe of parameter includes columns: "x", "l", "r", "pa", "cb_id", "read_id", "junction"
     """
-    if not all([utr_file,cb_file,bam_file,output_dir]):
-        cli(['prepare_input', '--help'])
-        sys.exit(1)
+    # if not all([utr_file,cb_file,bam_file,output_dir]):
+    #     cli(['prepare_input', '--help'])
+    #     sys.exit(1)
         
     print(f"Processing ", bam_file)
     
