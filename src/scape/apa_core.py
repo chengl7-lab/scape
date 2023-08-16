@@ -29,6 +29,8 @@ Changes:
 - 24.07.2023
     + change "logfile" to "log_file" to have a consistent name
     + add 2 more attributes to Parameters: cb_id_arr, readID_arr
+- 09.08.2023: Assign (np.arannge(int(self.min_theta), int(self.L), int(self.theta_step)) + 0.0)  to all_theta in function fixed_run(), and self.all_theta in both functions run() and __init__()
+- 10.08.2023: Only process input pickle files without “tmp” in their names
 """
 
 @click.command(name="infer_pa")
@@ -65,6 +67,10 @@ def infer_pa(pkl_input_file: str, output_dir: str):
         np.random.seed(1)
         ## Ex: "/scratch/cs/nanopore/let23/SCAPE/apamix/data/Chr1/original_name.input.pkl" then file name is "original_name"
         filename = os.path.basename(pkl_input_file)[:-10]
+        
+        ## only process pickle file that was successfully completed in prepare_input()
+        if ".tmp." in filename:
+            raise Exception("The input file "+filename+" is incomplete. Please re-run prepare_input() on "+filename.split(".")[0]+".bam")
 #         input_pkl_file = pkl_input_file
         out_pkl_file = os.path.join(output_dir, "pkl_output", filename + ".res.pkl")
 
@@ -335,7 +341,8 @@ class ApaModel(object):
         self.theta_step = theta_step
 
         self.min_theta = int(min(self.l_arr)) + 0.0
-        self.all_theta = np.arange(int(self.min_theta), int(self.L), int(self.theta_step)) + 0.0
+#         self.all_theta = np.arange(self.min_theta, self.L, self.theta_step) + 0.0
+        self.all_theta = np.arange(int(self.min_theta), int(self.L), int(self.theta_step)) + 0.0 # change in 09/08/2023
         self.n_all_theta = len(self.all_theta)
 
         # limits of component weights
@@ -811,7 +818,9 @@ class ApaModel(object):
 
     def fixed_run(self, rm_comp_flag=False):
         assert self.pre_para is not None
-        all_theta = np.arange(self.min_theta, self.L, self.theta_step)
+#         all_theta = np.arange(self.min_theta, self.L, self.theta_step)
+        all_theta = np.arange(int(self.min_theta), int(self.L), int(self.theta_step)) + 0.0 ## change 09/08/2023
+
         max_beta = np.max(self.pre_para.beta_arr)
         min_beta = np.min(self.pre_para.beta_arr)
         theta_list = []
@@ -863,7 +872,9 @@ class ApaModel(object):
             raise Exception("max_beta=" + str(self.max_beta) + " beta_step_size=" + str(self.beta_step_size) +
                             ", max_beta has to be greater than beta_step_size!")
 
-        self.all_theta = np.arange(self.min_theta, self.L, self.theta_step)
+#         self.all_theta = np.arange(self.min_theta, self.L, self.theta_step)
+        self.all_theta = np.arange(int(self.min_theta), int(self.L), int(self.theta_step)) + 0.0 ## change 09/08/2023
+
         self.predef_beta_arr = np.arange(self.beta_step_size, self.max_beta, self.beta_step_size) + 0.0
 
         n_apa_trial = self.n_max_apa - self.n_min_apa + 1

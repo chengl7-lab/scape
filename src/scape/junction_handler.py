@@ -14,6 +14,7 @@ Date: 22.06.2023
 
 """
 - Created: 28/10/2022
+- 10/08/2023: only process merge_pa when all input pickle files were successfully processed in infer_pa and each of them is respective to one res pickle file.
     
 NOTED:
 - Order of reads in the final dataframe must be fixed and the same as order resulted from apa_core -> solved by adding readID to class Parameters
@@ -51,8 +52,13 @@ def merge_pa(output_dir:str, utr_merge=True):
     if not os.path.exists(os.path.join(output_dir, "pkl_input")):
         raise Exception("Please use the same directory that stores res pickle files by prepare_input")
     
-    model_out_files = [i for i in os.listdir(os.path.join(output_dir, "pkl_output")) if ".res.pkl" in i]
+
     model_in_files = [i for i in os.listdir(os.path.join(output_dir, "pkl_input")) if ".input.pkl" in i]
+    ## only consider output files that are respective to an input file
+    model_out_files = [i for i in os.listdir(os.path.join(output_dir, "pkl_output")) 
+                       if (".res.pkl" in i) and (i[:-8]+".input.pkl" in model_in_files)]
+    if len(model_in_files) != len(model_out_files):
+        raise Exception("Number of *.res.pkl is different from number of *.input.pkl. Please make sure that all input files are successfully used for infering PAS.")
     if utr_merge:
         outfile = os.path.join(output_dir, "res.gene.pkl")
     else:

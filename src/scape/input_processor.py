@@ -24,7 +24,7 @@ CHANGES:
 - Tien: 28/10/2022 Add function for detecting junction reads (flag_junction_read()) for single cell RNA-seq data only
                     Add unique read_id to each dataframe of paramater per gene-utr_file region. 
                         Different gene-utr_file region can have the same read_id but they means different reads.
-
+- Tien: 09/08/2023 Change chunksize to 100 in prepare_input. When 1000, the inference using apa_core with no GPU took more than 2 days to finish.
 NOTE:
 - For single-cell RNA-deq data from 10X, Cell Ranger ver >3.1 must be used to have tag "pa"
     Read 1 includes cell barcode and UMI only
@@ -109,6 +109,12 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
     ## generate prefix of output files
     outfile = os.path.join(output_dir, "pkl_input", os.path.basename(bam_file)[:-4])
     
+    ## create log file for this chromosome
+    log_filename = outfile+".log"
+    if os.path.exists(log_filename):
+        os.remove(log_filename)
+    logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    
     ## delete all input.pkl files (that are corresponding to one considering bam file) in directory
     for filename in glob(os.path.join(output_dir
                                       , "pkl_input"
@@ -116,8 +122,8 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
                                      )
                         ):
         os.remove(filename)
-            
-
+    # Write log messages
+    logging.info("All pickle files respective to "+os.path.basename(bam_file)[:-4]+" in pkl_input are deleted.")
 
     start_t1 = timer()
     ## Read file of barcode if exists, otherwise create the new one
@@ -146,8 +152,10 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
     cnt = 0 ## to count number of total generated pickle files.
 
     ## Process each UTR
-    
+    # Write log messages
+    logging.info(outfile + "." + str(chunksize) + ".tmp." + str(1) + ".input.pkl is in processed")
     for idx in range(len(utr_df)):
+        
         left_site = utr_df.loc[idx, "start"]
         right_site = utr_df.loc[idx, "end"]
         chr_name_ori = str(utr_df.loc[idx, "chrom"])
@@ -172,7 +180,7 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
 
         # Write tuple to output_dir/pkl_input/
         if cnt <= chunksize:
-            outfile_ = outfile + "." + str(chunksize) + "." + str(n_obj) + ".input.pkl"
+            outfile_ = outfile + "." + str(chunksize) + ".tmp." + str(n_obj) + ".input.pkl"
             
             # append to file
             with open(outfile_, 'a+b') as f:
@@ -180,12 +188,16 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
                     ## include region with at least 100 reads
                     pickle.dump(out_tuple, f)
                     cnt += 1
-                    print(f"Save ", outfile_)
+#                     print(f"Save ", outfile_)
         else:
+            # Write log messages
+            logging.info(outfile + "." + str(chunksize) + ".tmp." + str(n_obj) + ".input.pkl is successfully processed")
             # start to write to the new file
             cnt = 0
             n_obj += 1
-            outfile_ = outfile + "." + str(chunksize) + "." + str(n_obj) + ".input.pkl"
+            outfile_ = outfile + "." + str(chunksize) + ".tmp." + str(n_obj) + ".input.pkl"
+            # Write log messages
+            logging.info(outfile + "." + str(chunksize) + ".tmp." + str(n_obj) + ".input.pkl is in processed")
 
             # append to file
             with open(outfile_, 'a+b') as f:
@@ -193,11 +205,23 @@ def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, c
                     ## include region with at least 100 reads
                     pickle.dump(out_tuple, f)
                     cnt += 1
-                    print(f"Save ", outfile_)
+#                     print(f"Save ", outfile_)
 
     ## End processing each UTR region
     end_t1 = timer()
     print(f'Done {cnt} files in {(end_t1 - start_t1)/60} minutes.')
+    
+    ## rename file: replacing "tmp" by the total number of files for this chromosome
+    for idx in range(1, n_obj+1):
+        os.rename(outfile + "." + str(chunksize) + ".tmp." + str(idx) + ".input.pkl"
+                  , outfile + "." + str(chunksize) +"."+ str(n_obj) +"."+ str(idx) + ".input.pkl")
+    
+    # Write log messages
+    logging.info("FINISHED")
+    logging.info("There are "+str(n_obj)+" pickle input files for this BAM file "+bam_file)
+    logging.info("Phrase tmp in name of pickle files is replaced by "+str(n_obj))
+    
+
 
     
 
@@ -562,8 +586,10 @@ def list_read_to_dataframe(out_tbl, chr_name, gene_id, utr_id, left_site, right_
                            , inplace=True, ignore_index=True
                           )
     out_df["read_id"] = out_df.index
-    #         out_df["pa"] = out_df["pa"].astype('Int64')
-    #         out_df["r"] = out_df["r"].astype('Int64')
+#     out_df["seg1_en"] = out_df["seg1_en"].astype('Int64')
+#     out_df["seg2_en"] = out_df["seg2_en"].astype('Int64')
+#     out_df["pa"] = out_df["pa"].astype('Int64')
+#     out_df["r"] = out_df["r"].astype('Int64')
     gene_info = str(chr_name)+":"+str(gene_id)+":"+str(utr_id)+":"+str(left_site)+"-"+str(right_site)+":"+str(strand)
     return gene_info, out_df[["x", "l", "r", "pa", "cb_id", "read_id", "junction", "seg1_en", "seg2_en"]]
 
