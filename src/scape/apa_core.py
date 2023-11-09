@@ -917,9 +917,9 @@ class ApaModel(object):
         return res
 
 
-def subsample_run(max_sample=1000000, return_model=False, re_run_mode=True, gene_info_str="None", **kwargs):
+def subsample_run(return_model=False, re_run_mode=True, gene_info_str="None", **kwargs):
     """
-    :param max_sample: maximum number of samples that we will not do subsampling
+    bin reads and infer pa sites
     :param return_model: if ApaModel object will be returned
     :param re_run_mode: if re-run if the infered number of pa sites equals n_max_apa
     :param gene_info_str: gene-utr_file name of the data to be analyzed
@@ -931,63 +931,23 @@ def subsample_run(max_sample=1000000, return_model=False, re_run_mode=True, gene
         utr_len = max(tbl["x"]) + max(tbl["l"]) + 50
         kwargs["utr_length"] = utr_len
 
-    if len(kwargs['data']) <= max_sample:
-        apamodel = ApaModel(**kwargs)
-        res = apamodel.run()
+    apamodel = ApaModel(**kwargs)
+    res = apamodel.run()
+    res.gene_info_str = gene_info_str
+
+    while re_run_mode and len(res.alpha_arr) == kwargs["n_max_apa"]:
+        print(
+            f"Infer n_pa_sites = n_max_apa = {len(res.alpha_arr)}, rerun by setting n_max_apa={len(res.alpha_arr) + 2}")
+        apamodel.n_max_apa = kwargs["n_max_apa"] + 2
+        apamodel.n_min_apa = kwargs["n_max_apa"]
+        kwargs["n_max_apa"] = kwargs["n_max_apa"] + 2
+        res = apamodel.run(skip_lik_comp_flag=True)
         res.gene_info_str = gene_info_str
 
-        while re_run_mode and len(res.alpha_arr) == kwargs["n_max_apa"]:
-            print(f"Infer n_pa_sites = n_max_apa = {len(res.alpha_arr)}, rerun by setting n_max_apa={len(res.alpha_arr)+2}")
-            apamodel.n_max_apa = kwargs["n_max_apa"] + 2
-            apamodel.n_min_apa = kwargs["n_max_apa"]
-            kwargs["n_max_apa"] = kwargs["n_max_apa"] + 2
-            res = apamodel.run(skip_lik_comp_flag=True)
-            res.gene_info_str = gene_info_str
-
-        if return_model:
-            return res, apamodel
-        else:
-            return res
-
-    print(f"n_data_point={len(kwargs['data'])} is larger than max_sample={max_sample}, perform subsample and run.")
-    full_apa_model = ApaModel(**kwargs)
-    n1 = len(full_apa_model.pa_site_data)
-    n2 = len(full_apa_model.r_known_data)
-    n3 = len(full_apa_model.r_unknown_data)
-    if n1 >= max_sample:
-        inds = np.random.choice(full_apa_model.pa_site_data.inds, n1)
-    elif n1+n2 >= max_sample:
-        inds1 = full_apa_model.pa_site_data.inds
-        inds2 = np.random.choice(full_apa_model.r_known_data.inds, max_sample-n1)
-        inds = np.concatenate((inds1, inds2))
-    elif n1+n2+n3 >= max_sample:
-        inds1 = full_apa_model.pa_site_data.inds
-        inds2 = full_apa_model.r_known_data.inds
-        inds3 = np.random.choice(full_apa_model.r_unknown_data.inds, max_sample-n1-n2)
-        inds = np.concatenate((inds1, inds2, inds3))
-    sub_kwargs = kwargs.copy()
-    sub_kwargs['data'] = kwargs['data'].loc[inds]
-    sub_apa_model = ApaModel(**sub_kwargs)
-    sub_res = sub_apa_model.run()
-
-    while re_run_mode and len(sub_res.alpha_arr) == sub_kwargs["n_max_apa"]:
-        print(
-            f"Infer n_pa_sites = n_max_apa = {len(sub_res.alpha_arr)}, rerun by setting n_max_apa={len(sub_res.alpha_arr) + 2}")
-        sub_apa_model.n_max_apa = sub_kwargs["n_max_apa"] + 2
-        sub_apa_model.n_min_apa = sub_kwargs["n_max_apa"]
-        sub_kwargs["n_max_apa"] = sub_kwargs["n_max_apa"] + 2
-        sub_res = sub_apa_model.run(skip_lik_comp_flag=True)
-        sub_res.gene_info_str = gene_info_str
-
-    full_apa_model.n_max_apa = sub_apa_model.n_max_apa
-    full_apa_model.fixed_inference_flag = True
-    full_apa_model.pre_para = sub_res
-    full_res = full_apa_model.fixed_run(rm_comp_flag=True)
-    full_res.gene_info_str = gene_info_str
     if return_model:
-        return full_res, full_apa_model
+        return res, apamodel
     else:
-        return full_res
+        return res
 
 ## Try
 def exp_pa_len(apamix_res, label_arr):
