@@ -1,5 +1,5 @@
 from collections import Counter, defaultdict
-
+import logging
 import numpy as np
 import pysam
 import pandas as pd
