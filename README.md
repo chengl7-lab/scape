@@ -1,6 +1,6 @@
-## APA: A package for estimating alternative polyadenylation events from scRNA-seq data.
+# APA: A package for estimating alternative polyadenylation events from scRNA-seq data.
 
-# Installation
+### Installation
 
 ```
 conda config --append channels bioconda 
