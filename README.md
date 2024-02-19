@@ -1,4 +1,4 @@
-## APA: A package for estimating alternative polyadenylation events from scRNA-seq data.
+## SCAPE-APA: a package for estimating alternative polyadenylation events from scRNA-seq data
 
 ### Installation
 
