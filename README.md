@@ -32,11 +32,24 @@ pip install .
 | scape cal_exp_pa_len | Calculate the expected length of PA. |
 | scape ex_pa_cnt_mat | Extract read count matrix. |
 
-
-### Usage
 Get help information of `scape` or `scape commands`.
 ```
 scape --help
 scape gen_utr_annotation --help
 ```
+
+### Usage
+
+#### gen_utr_annotation
+
+| Input Argument name | Required | Default | Description |
+| --- | --- |  --- |  --- | 
+| --gff_file | Yes | NA | The gff3 or gff3.gz file including annotation of gene body. |
+| --output_dir | Yes | NA | Directory to save dataframe of selected UTR. |
+| --res_file_name | Yes | NA | File Name of dataframe of the UTR annotation. The suffix `.csv` is automatically generated. |
+| --gff_merge_strategy | No | merge | Method for processing overlapping regions. It follows `merge_strategy` in package gffutils. |
+
+
+
+
 
