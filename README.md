@@ -2,17 +2,25 @@
 
 ### Installation
 
-Environment setup.
+#### Environment setup.
 ```
 conda config --append channels bioconda 
 conda config --append channels conda-forge 
 conda create -n scape_env python=3.9
 conda activate scape_env
 ```
+#### PyPI installation
 Install scape-apa via [pypi](https://pypi.org/project/scape-apa).
 ```
 pip install scape-apa
 ```
+#### Installation from our GitHub repository
+```
+git clone https://github.com/chengl7-lab/scape.git
+cd scape
+pip install .
+```
+
 ### Commands
 
 | Command | Description |
