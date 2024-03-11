@@ -101,9 +101,19 @@ OUTPUT: `exp_pa_len.csv`. It is a dataframe with 2 columns.
 
 OUTPUT: An tsv.gz file named {res_pkl_file.cnt.tsv.gz} is stored in `output_dir/`.
 
-### Demo
+### Benchmark
 
 ```
+Datasets for benchmark experiments and benchmark scripts.  
 TO BE UPDATED.
 ```
 
+### Demo
+
+```
+Toy Example. TO BE UPDATED.
+```
+
+```
+A larger example for differential analysis.
+```
