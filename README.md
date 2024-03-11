@@ -2,18 +2,16 @@
 
 ### Installation
 
+Environment setup
 ```
 conda config --append channels bioconda 
 conda config --append channels conda-forge 
-conda create -n test_conda python=3.9
-conda activate test_conda
+conda create -n scape_env python=3.9
+conda activate scape_env
 ```
-
+Install scape-apa via [pypi](https://pypi.org/project/scape-apa)
 ```
-conda install pip
-conda install -c bioconda bedtools
-pip install taichi
-pip install .
+pip install scape-apa
 ```
 
 ```
