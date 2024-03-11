@@ -49,7 +49,7 @@ scape gen_utr_annotation --help
 | --res_file_name | Yes | NA | File Name of dataframe of the UTR annotation. The suffix `.csv` is automatically generated. |
 | --gff_merge_strategy | No | merge | Method for processing overlapping regions. It follows `merge_strategy` in package gffutils. |
 
-
+OUTPUT: An csv file including information of annotated 3UTR which is stored at `{output_dir}/{res_file_name}.csv`:
 
 
 
