@@ -58,10 +58,48 @@ OUTPUT: An csv file including information of annotated 3UTR which is stored at `
 | --utr_file  | TEXT    |Yes | NA |  UTR annotation file (dataframe, resulted from gen_utr_annotation).|
 | --cb_file   | TEXT    |Yes | NA | File of tsv.gz including all validated barcodes (by CellRanger). This file has one column of cell barcode which must be consistent with value of CB tag in bam_file file. |
 | --bam_file  | TEXT    |Yes | NA | Bam file that is used for searching reads over annotated UTR.|
-| --output_dir| TEXT    |Yes | NA | Directory to save pickle files of selected reads over annotated UTR. |
+| --output_dir| TEXT    |Yes | NA | Output directory to save pickle files of selected reads over annotated UTR. |
 | --chunksize |INTERGER | No |1000 | Number of UTR regions included in each small pickle file, which contains the preprocessed input file for APA analysis. |
 
 OUTPUT: Pickle files that include tuples (gene info, dataframe of parameter). 
+
+#### infer_pa
+
+| Input Argument |  Type | Required | Default | Description |
+| --- | --- |  --- |  --- |  --- | 
+| --input_pickle_file  | TEXT    |Yes | NA | Input pickle file (result of prepare_input)|
+| --output_dir         | TEXT    |Yes | NA | Directory to save output pickle files including PAS information over annotated UTR. |
+
+OUTPUT: Pickle file including Parameters for each UTR region.
+
+
+#### merge_pa
+
+| Input Argument |  Type | Required | Default | Description |
+| --- | --- |  --- |  --- |  --- | 
+| --output_dir  | TEXT       |Yes | NA | Directory which was used in previous steps to save output by `prepare_input` and `infer_pa`.|
+| --utr_merge   | BOOLEAN    |No | True | If True, PA sites from the same gene are merge. Otherwise, if False, PA sites from the same UTR are merged. |
+
+OUTPUT: A single pickle file containing all UTRs of all genes is stored in `output_dir/`. Its name is `res.gene.pkl` if `utr_merge=True`, otherwise, its name is `res.utr.pkl`.
+
+#### cal_exp_pa_len
+
+| Input Argument |  Type | Required | Default | Description |
+| --- | --- |  --- |  --- |  --- | 
+| --output_dir        | TEXT  |Yes | NA | Directory which was used in previous steps to save output by `prepare_input` and `infer_pa`.|
+| --cell_cluster_file | TEXT  |No | - | An `csv` file containing two columns in order: cell barcode (CB) and respective group (cell_cluster_file). Its name will be included in the file name of final result. |
+| --res_pkl_file      | TEXT  |No | - | Name of res pickle file that contains PASs for calculating expected PA length. Its name will be included in the file name of final result. |
+
+OUTPUT: `exp_pa_len.csv`. It is a dataframe with 2 columns.
+
+#### ex_pa_cnt_mat
+
+| Input Argument |  Type | Required | Default | Description |
+| --- | --- |  --- |  --- |  --- | 
+| --output_dir        | TEXT  |Yes | NA | Directory which was used in previous steps to save output by `prepare_input` and `infer_pa`.|
+| --res_pkl_file      | TEXT  |No | - | Name of res pickle file that contains PASs for calculating expected PA length. Its name will be included in the file name of final result. |
+
+OUTPUT: An tsv.gz file named {res_pkl_file.cnt.tsv.gz} is stored in `output_dir/`.
 
 
 
