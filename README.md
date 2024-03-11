@@ -115,5 +115,5 @@ Toy Example. TO BE UPDATED.
 ```
 
 ```
-A larger example for differential analysis.
+A larger example for differential analysis. TO BE UPDATED.
 ```
