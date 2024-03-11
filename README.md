@@ -42,14 +42,26 @@ scape gen_utr_annotation --help
 
 #### gen_utr_annotation
 
-| Input Argument name | Required | Default | Description |
-| --- | --- |  --- |  --- | 
-| --gff_file | Yes | NA | The gff3 or gff3.gz file including annotation of gene body. |
-| --output_dir | Yes | NA | Directory to save dataframe of selected UTR. |
-| --res_file_name | Yes | NA | File Name of dataframe of the UTR annotation. The suffix `.csv` is automatically generated. |
-| --gff_merge_strategy | No | merge | Method for processing overlapping regions. It follows `merge_strategy` in package gffutils. |
+| Input Argument |  Type | Required | Default | Description |
+| --- | --- |  --- |  --- |  --- | 
+| --gff_file           | TEXT | Yes | NA  |  The gff3 or gff3.gz file including annotation of gene body. |
+| --output_dir         | TEXT | Yes | NA  | Directory to save dataframe of selected UTR. |
+| --res_file_name      | TEXT | Yes | NA  | File Name of dataframe of the UTR annotation. The suffix `.csv` is automatically generated. |
+| --gff_merge_strategy | TEXT | No  | merge | Method for processing overlapping regions. It follows `merge_strategy` in package gffutils. |
 
-OUTPUT: An csv file including information of annotated 3UTR which is stored at `{output_dir}/{res_file_name}.csv`:
+OUTPUT: An csv file including information of annotated 3UTR which is stored at `{output_dir}/{res_file_name}.csv`.
+
+#### prepare_input
+
+| Input Argument |  Type | Required | Default | Description |
+| --- | --- |  --- |  --- |  --- | 
+| --utr_file  | TEXT    |Yes | NA |  UTR annotation file (dataframe, resulted from gen_utr_annotation).|
+| --cb_file   | TEXT    |Yes | NA | File of tsv.gz including all validated barcodes (by CellRanger). This file has one column of cell barcode which must be consistent with value of CB tag in bam_file file. |
+| --bam_file  | TEXT    |Yes | NA | Bam file that is used for searching reads over annotated UTR.|
+| --output_dir| TEXT    |Yes | NA | Directory to save pickle files of selected reads over annotated UTR. |
+| --chunksize |INTERGER | No |1000 | Number of UTR regions included in each small pickle file, which contains the preprocessed input file for APA analysis. |
+
+OUTPUT: Pickle files that include tuples (gene info, dataframe of parameter). 
 
 
 
