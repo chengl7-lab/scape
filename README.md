@@ -2,7 +2,7 @@
 
 ### Installation
 
-#### Environment setup.
+#### Environment setup
 ```
 conda config --append channels bioconda 
 conda config --append channels conda-forge 
