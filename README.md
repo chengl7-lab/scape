@@ -13,21 +13,22 @@ Install scape-apa via [pypi](https://pypi.org/project/scape-apa)
 ```
 pip install scape-apa
 ```
+### Commands
+
+| Command | Description |
+| --- | --- |
+| scape gen_utr_annotation | Generate UTR annotation. |
+| scape prepare_input | Prepare data per UTR. |
+| scape infer_pa | Parameters inference. |
+| scape merge_pa | Merge PA within junction per gene or UTR. |
+| scape cal_exp_pa_len | Calculate the expected length of PA. |
+| scape ex_pa_cnt_mat | Extract read count matrix. |
+
+
 ### Usage
+Get help information of scape or scape Commands
 ```
 scape --help
-```
-Commands:
-  cal_exp_pa_len      INPUT: - output_dir: path to output_dir folder (to...
-  ex_pa_cnt_mat       INPUT: - output_dir: path to output_dir folder
-  gen_utr_annotation  Define possible 3' UTR regions.
-  infer_pa            INPUT: - pkl_input_file: file path (pickle)...
-  merge_pa            INPUT: - output_dir: directory to + pkl_output...
-  prepare_input       INPUT:cb_df - utr_file: path to utr_file df -...
-
-```
 scape gen_utr_annotation --help
 ```
-
-
 
