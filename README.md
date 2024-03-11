@@ -13,15 +13,11 @@ Install scape-apa via [pypi](https://pypi.org/project/scape-apa)
 ```
 pip install scape-apa
 ```
-
+### Usage
 ```
 scape --help
 scape gen_utr_annotation --help
 ```
 
-```
-python -m scape --help
-python -m scape gen_utr_annotation --help
-```
 
 
