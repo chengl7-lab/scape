@@ -9,7 +9,7 @@ conda config --append channels conda-forge
 conda create -n scape_env python=3.9
 conda activate scape_env
 ```
-#### PyPI installation
+#### PyPI installation (recommended)
 Install scape-apa via [pypi](https://pypi.org/project/scape-apa).
 ```
 pip install scape-apa
