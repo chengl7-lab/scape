@@ -100,20 +100,3 @@ OUTPUT: `exp_pa_len.csv`. It is a dataframe with 2 columns.
 | --res_pkl_file      | TEXT  |No | - | Name of res pickle file that contains PASs for calculating expected PA length. Its name will be included in the file name of final result. |
 
 OUTPUT: An tsv.gz file named {res_pkl_file.cnt.tsv.gz} is stored in `output_dir/`.
-
-### Benchmark
-
-```
-Datasets for benchmark experiments and benchmark scripts.  
-TO BE UPDATED.
-```
-
-### Demo
-
-```
-Toy Example. TO BE UPDATED.
-```
-
-```
-A larger example for differential analysis. TO BE UPDATED.
-```
