@@ -1,0 +1,5 @@
+2023-08-10 23:04:32
+The CPU usage is: 4.8%
+Memory usage: used = 45.97 GB (36.53%);  available=79.21 GB (62.95%); total=125.83 GB
+svmem(total=135103930368, available=85053321216, percent=37.0, used=49354600448, free=74926030848, active=46028660736, inactive=9517776896, buffers=199483392, cached=10623815680, shared=2961408, slab=2317402112)
+

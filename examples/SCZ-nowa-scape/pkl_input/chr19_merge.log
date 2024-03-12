@@ -1,0 +1,5 @@
+2023-08-10 22:57:51,787 - INFO - All pickle files respective to chr19_merge in pkl_input are deleted.
+2023-08-10 22:57:51,939 - INFO - /scratch/cs/scz_apa/let23/scape/examples/SCZ-nowa-scape/pkl_input/chr19_merge.100.tmp.1.input.pkl is in processed
+2023-08-10 23:02:48,458 - INFO - FINISHED
+2023-08-10 23:02:48,459 - INFO - There are 1 pickle input files for this BAM file /scratch/cs/scz_apa/let23/scape/examples/SCZ-nowa-data/merge/chr19_merge.bam
+2023-08-10 23:02:48,459 - INFO - Phrase tmp in name of pickle files is replaced by 1
