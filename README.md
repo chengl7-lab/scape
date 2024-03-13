@@ -100,3 +100,10 @@ OUTPUT: `exp_pa_len.csv`. It is a dataframe with 2 columns.
 | --res_pkl_file      | TEXT  |No | - | Name of res pickle file that contains PASs for calculating expected PA length. Its name will be included in the file name of final result. |
 
 OUTPUT: An tsv.gz file named {res_pkl_file.cnt.tsv.gz} is stored in `output_dir/`.
+
+### Demo & Tutorials
+
+- [SCAPE toy example](tutorial/SCAPE-toy-example.ipynb)
+- [SCAPE toy example with DE](tutorial/SCAPE-example-with-DE.ipynb)
+- [Benchmarks](benchmark/benchmark_btw_old_and_new_version_of_SCAPE.ipynb)
+
