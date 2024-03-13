@@ -103,6 +103,8 @@ OUTPUT: An tsv.gz file named {res_pkl_file.cnt.tsv.gz} is stored in `output_dir/
 
 ### Demo & Tutorials
 
+The data used can be downloaded from [examples](examples/).
+
 - [SCAPE toy example](tutorial/SCAPE-toy-example.ipynb)
 - [SCAPE toy example with DE](tutorial/SCAPE-example-with-DE.ipynb)
 - [Benchmarks](benchmark/benchmark_btw_old_and_new_version_of_SCAPE.ipynb)
