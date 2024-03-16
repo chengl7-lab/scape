@@ -109,3 +109,6 @@ The data used can be downloaded from [examples](examples/).
 - [SCAPE example with differential expression analysis](tutorial/SCAPE-example-with-DE.ipynb)
 - [Benchmarks](benchmark/benchmark_btw_old_and_new_version_of_SCAPE.ipynb)
 
+### Citation 
+
+Guangzhao Cheng, Tien Le, Ran Zhou, and Lu Cheng. SCAPE-APA: a package for estimating alternative polyadenylation events from scRNA-seq data. bioRxiv 2024.03.12.584547; doi: https://doi.org/10.1101/2024.03.12.584547
