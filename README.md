@@ -6,7 +6,7 @@
 ```
 conda config --append channels bioconda 
 conda config --append channels conda-forge 
-conda create -n scape_env python=3.9
+conda create -n scape_env python=3.11
 conda activate scape_env
 ```
 #### PyPI installation (recommended)
@@ -69,6 +69,9 @@ OUTPUT: Pickle files that include tuples (gene info, dataframe of parameter).
 | --- | --- |  --- |  --- |  --- | 
 | --input_pickle_file  | TEXT    |Yes | NA | Input pickle file (result of prepare_input)|
 | --output_dir         | TEXT    |Yes | NA | Directory to save output pickle files including PAS information over annotated UTR. |
+| --toml_para_file | TEXT | No | None | A TOML file ([example](./tutorial/default_config.toml)) specifies user-defined parameters.  | 
+| --pre_para_pkl_file | TEXT | No | None | A pickle file with pre-specified pA sites and utr length, result file of scape analysis. | 
+
 
 OUTPUT: Pickle file including Parameters for each UTR region.
 
