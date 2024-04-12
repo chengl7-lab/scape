@@ -61,7 +61,7 @@ Changes:
     default=None,
     required=False
 )
-def infer_pa(pkl_input_file: str, output_dir: str, toml_para_file: str = None, pre_para_pkl_file=None, **kwargs):
+def infer_pa(pkl_input_file: str, output_dir: str, toml_para_file: str = None, pre_para_pkl_file=None):
     """
     INPUT:
     - pkl_input_file: file path (pickle) including information for each UTR region
@@ -73,30 +73,29 @@ def infer_pa(pkl_input_file: str, output_dir: str, toml_para_file: str = None, p
     - Pickle file including Parameters for each UTR region
     """
 
-    para_dict = {"n_max_apa": 5}
+    para_dict = {"n_max_apa": 5, "pre_para_pkl_file": pre_para_pkl_file}
     if toml_para_file:
         assert os.path.exists(toml_para_file)
         with open(toml_para_file, "rb") as fh:
-            para_dict = tomllib.load(fh)
+            user_para_dict = tomllib.load(fh)
+            para_dict.update(user_para_dict)
         print(f"User defined parameter file {toml_para_file} loaded.")
-        for k, v in para_dict.items():
+        for k, v in user_para_dict.items():
             print(f"{k} = {v}")
         print()
 
     if pre_para_pkl_file:
         assert os.path.exists(pre_para_pkl_file)
-        para_dict["pre_para_pkl_file"] = pre_para_pkl_file
         para_dict["fixed_run_mode"] = True
 
-    _infer_pa(pkl_input_file, output_dir, pre_para_pkl_file=pre_para_pkl_file, **para_dict)
+    _infer_pa(pkl_input_file, output_dir, **para_dict)
 
 
-def _infer_pa(pkl_input_file: str, output_dir: str, pre_para_pkl_file = None, **kwargs):
+def _infer_pa(pkl_input_file: str, output_dir: str, **kwargs):
     """
     INPUT:
     - pkl_input_file: file path (pickle) including information for each UTR region
     - output_dir: path to output_dir folder
-    - watch_dog_flag: if a watch dog process will be started
 
     OUTPUT:
     - Pickle file including Parameters for each UTR region
@@ -130,9 +129,9 @@ def _infer_pa(pkl_input_file: str, output_dir: str, pre_para_pkl_file = None, **
             exit_event = Event()
             log_file = os.path.join(output_dir, "pkl_output", filename + "log.txt")
             infer_with_watchdog = watch_dog(log_file, exit_event)(infer)
-            infer_with_watchdog(pkl_input_file, out_pkl_file, pre_para_pkl_file=pre_para_pkl_file, **kwargs)
+            infer_with_watchdog(pkl_input_file, out_pkl_file, **kwargs)
         else:
-            infer(pkl_input_file, out_pkl_file, pre_para_pkl_file=pre_para_pkl_file, **kwargs)
+            infer(pkl_input_file, out_pkl_file, **kwargs)
 
 
 def infer(pickle_input_file, pickle_output_file, **kwargs):
@@ -146,7 +145,10 @@ def infer(pickle_input_file, pickle_output_file, **kwargs):
     :param kwargs: other parameters for apamix
     :return: None
     """
-    print(f"start inferring APA events from input pickle file = {pickle_input_file}. Output file = {pickle_input_file}")
+    print(f"1start inferring APA events from input pickle file = {pickle_input_file}. Output file = {pickle_input_file}")
+    print("hello")
+    print(kwargs)
+    print(f"{kwargs= }")
     res_lst = []
     with open(pickle_input_file, 'rb') as fh:
         print("open file as file handler")
