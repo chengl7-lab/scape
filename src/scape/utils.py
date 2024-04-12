@@ -53,6 +53,10 @@ It return empty BedTools when applying sort() or merge() on BedTools object retu
     help='Merge strategy which is used when creating database from gff3 by gffutils.'
     )
 def gen_utr_annotation(gff_file: str, output_dir: str, res_file_name: str, gff_merge_strategy: str):
+    _gen_utr_annotation(gff_file, output_dir, res_file_name, gff_merge_strategy)
+
+
+def _gen_utr_annotation(gff_file: str, output_dir: str, res_file_name: str, gff_merge_strategy: str):
     """
     Define possible 3' UTR regions.
 

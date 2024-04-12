@@ -1,0 +1,27 @@
+# general parameters
+watch_dog_flag = false # if a watchdog process will be created to monitor cpu and memeory usage
+re_run_mode = true # re-run if the infered number of pa sites equals n_max_apa
+debug = false # debug mode
+
+# parameters for pA site inference
+n_max_apa = 5 # maximum number of pA sites to be infered
+n_min_apa = 1 # minimum number of pA sites
+utr_length = 2000 # length of 3'UTR
+min_LA = 20 # minimum polyA tail length
+max_LA = 150 # maximum polyA tail length
+
+# parameters of fragment length distribution
+mu_f = 300 # mean of DNA fragment (contain both read pairs) length
+sigma_f = 50 # std of DNA fragment (contain both read pairs) length
+
+# parameters regarding pA sites
+min_pa_gap = 100 # minimum gap between two pA sites
+max_beta = 70 # maximum vaule of std of pA sites (beta)
+theta_step = 9 # step size of pA sites (alpha) in the numerical integration
+beta_step = 5 # step size of the pA site std (beta) in the numerical integration
+
+# limits of component weights in the optimization
+min_ws = 0.05 # minimum weight of a pA site component in the final estimation
+max_unif_ws = 0.15 # maximum weight of the uniform component
+
+

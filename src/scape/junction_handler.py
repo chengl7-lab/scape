@@ -37,8 +37,11 @@ NOTED:
     default=True,
     help='By default, True if want to process all pa site of one gene at together. False if want to process each utr_file separately.'
     )
-#def apajunction(pkl_input_dir:str, pkl_output_dir:str, utr_merge=True):
 def merge_pa(output_dir:str, utr_merge=True):
+    _merge_pa(output_dir, utr_merge)
+
+
+def _merge_pa(output_dir:str, utr_merge=True):
     """
     INPUT:
         - output_dir: directory to 

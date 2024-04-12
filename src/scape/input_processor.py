@@ -74,8 +74,11 @@ NOTE:
 #     default="single-cell",
 #     help ='To know if input data is from single-cell RNA sequencing, or bulk RNA sequencing. Values must be [single-cell, bulk]'
 #     )
-#def apainput(utr_file: str, cb_file: str, bam_file: str, output_dir: str, chunksize: int, seqtype:str):
 def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, chunksize: int, seqtype = "single-cell"):
+    _prepare_input(utr_file, cb_file, bam_file, output_dir, chunksize, seqtype)
+
+
+def _prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, chunksize: int, seqtype = "single-cell"):
     """
     INPUT:cb_df
     - utr_file: path to utr_file df

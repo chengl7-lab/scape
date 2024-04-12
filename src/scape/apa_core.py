@@ -5,6 +5,7 @@ import time
 from timeit import default_timer as timer
 
 import math
+import tomllib
 
 import pickle
 import psutil
@@ -46,11 +47,56 @@ Changes:
     help='output directory',
     required=True
 )
-def infer_pa(pkl_input_file: str, output_dir: str):
+@click.option(
+    '--toml_para_file',
+    type=str,
+    help='a TOML file specifies user-defined parameters',
+    default=None,
+    required=False
+)
+@click.option(
+    '--pre_para_pkl_file',
+    type=str,
+    help='a pickle file with pre-specified pA sites and utr length, result file of scape analysis',
+    default=None,
+    required=False
+)
+def infer_pa(pkl_input_file: str, output_dir: str, toml_para_file: str = None, pre_para_pkl_file=None, **kwargs):
     """
     INPUT:
     - pkl_input_file: file path (pickle) including information for each UTR region
     - output_dir: path to output_dir folder
+    - toml_para_file: a TOML file specifies user-defined parameters
+    - watch_dog_flag: if a watch dog process will be started
+
+    OUTPUT:
+    - Pickle file including Parameters for each UTR region
+    """
+
+    para_dict = {"n_max_apa": 5}
+    if toml_para_file:
+        assert os.path.exists(toml_para_file)
+        with open(toml_para_file, "rb") as fh:
+            para_dict = tomllib.load(fh)
+        print(f"User defined parameter file {toml_para_file} loaded.")
+        for k, v in para_dict.items():
+            print(f"{k} = {v}")
+        print()
+
+    if pre_para_pkl_file:
+        assert os.path.exists(pre_para_pkl_file)
+        para_dict["pre_para_pkl_file"] = pre_para_pkl_file
+        para_dict["fixed_run_mode"] = True
+
+    _infer_pa(pkl_input_file, output_dir, pre_para_pkl_file=pre_para_pkl_file, **para_dict)
+
+
+def _infer_pa(pkl_input_file: str, output_dir: str, pre_para_pkl_file = None, **kwargs):
+    """
+    INPUT:
+    - pkl_input_file: file path (pickle) including information for each UTR region
+    - output_dir: path to output_dir folder
+    - watch_dog_flag: if a watch dog process will be started
 
     OUTPUT:
     - Pickle file including Parameters for each UTR region
@@ -67,22 +113,26 @@ def infer_pa(pkl_input_file: str, output_dir: str):
         np.random.seed(1)
         ## Ex: "/scratch/cs/nanopore/let23/SCAPE/apamix/data/Chr1/original_name.input.pkl" then file name is "original_name"
         filename = os.path.basename(pkl_input_file)[:-10]
-        
+
         ## only process pickle file that was successfully completed in prepare_input()
         if ".tmp." in filename:
-            raise Exception("The input file "+filename+" is incomplete. Please re-run prepare_input() on "+filename.split(".")[0]+".bam")
-#         input_pkl_file = pkl_input_file
+            raise Exception("The input file " + filename + " is incomplete. Please re-run prepare_input() on " +
+                            filename.split(".")[0] + ".bam")
+        #         input_pkl_file = pkl_input_file
         out_pkl_file = os.path.join(output_dir, "pkl_output", filename + ".res.pkl")
-
-        exit_event = Event()
-        log_file = os.path.join(output_dir, "pkl_output", filename + "log.txt")
 
         ## remove result file that is respective to considering input pickle file
         if os.path.exists(out_pkl_file):
             os.remove(out_pkl_file)
 
-        infer_with_watchdog = watch_dog(log_file, exit_event)(infer)
-        infer_with_watchdog(pkl_input_file, out_pkl_file, n_max_apa=5)
+        watch_dog_flag = kwargs.get("watch_dog_flag", False)
+        if watch_dog_flag:
+            exit_event = Event()
+            log_file = os.path.join(output_dir, "pkl_output", filename + "log.txt")
+            infer_with_watchdog = watch_dog(log_file, exit_event)(infer)
+            infer_with_watchdog(pkl_input_file, out_pkl_file, pre_para_pkl_file=pre_para_pkl_file, **kwargs)
+        else:
+            infer(pkl_input_file, out_pkl_file, pre_para_pkl_file=pre_para_pkl_file, **kwargs)
 
 
 def infer(pickle_input_file, pickle_output_file, **kwargs):
@@ -296,7 +346,8 @@ class ApaModel(object):
                  pre_para=None,
                  output_file=None,
 
-                 debug=False):
+                 debug=False,
+                 **kwargs):
 
         self.n_max_apa = n_max_apa  # maximum number of ATS sites
         self.n_min_apa = n_min_apa  # minimum number of ATS sites
@@ -735,7 +786,7 @@ class ApaModel(object):
             res = np.random.choice(self.L, size=n_apa-n_peak, replace=False)
             res = np.concatenate((peaks, res))
 
-        shift = np.rint(5 * self.beta_step_size * (2*np.random.uniform(n_apa)-1))
+        shift = np.rint(5 * self.beta_step_size * (2*np.random.uniform(low=0.0, high=1.0, size=n_apa)-1) )
         res = res + shift
         res = np.sort(res)
         _, res = self.find_nearest(self.all_theta, res)
@@ -917,19 +968,40 @@ class ApaModel(object):
         return res
 
 
-def subsample_run(return_model=False, re_run_mode=True, gene_info_str="None", **kwargs):
+def subsample_run(return_model=False, re_run_mode=True, gene_info_str="None", fixed_run_mode=False, **kwargs):
     """
     bin reads and infer pa sites
     :param return_model: if ApaModel object will be returned
-    :param re_run_mode: if re-run if the infered number of pa sites equals n_max_apa
+    :param re_run_mode: re-run if the infered number of pa sites equals n_max_apa
     :param gene_info_str: gene-utr_file name of the data to be analyzed
+    :param fixed_run_mode: if parameters are given
     :param kwargs: other parameters for ApaModel
     :return: a Parameter object, which contains an additional field "gene_info_str"
     """
-    if not "utr_length" in kwargs:
-        tbl = kwargs['data']
-        utr_len = max(tbl["x"]) + max(tbl["l"]) + 50
-        kwargs["utr_length"] = utr_len
+    tbl = kwargs['data']
+    utr_len = max(tbl["x"]) + max(tbl["l"]) + 50
+    utr_len = max(kwargs.get("utr_length", -1), utr_len)
+    kwargs["utr_length"] = utr_len
+
+    if fixed_run_mode:
+        assert kwargs["pre_para_pkl_file"]
+        assert os.path.exists(kwargs["pre_para_pkl_file"])
+        with open(kwargs["pre_para_pkl_file"], 'rb') as fh:
+            pre_para = pickle.load(fh)
+        kwargs["utr_length"]  = max(utr_len, pre_para.L)
+        apamodel = ApaModel(**kwargs,
+                            fixed_inference_flag=True,
+                            pre_para=pre_para)
+        start_t = timer()
+        res = apamodel.fixed_run()
+        end_t = timer()
+        print(f"Task takes {(end_t - start_t)} seconds")
+        res.gene_info_str = gene_info_str
+
+        if return_model:
+            return res, apamodel
+        else:
+            return res
 
     apamodel = ApaModel(**kwargs)
     res = apamodel.run()
@@ -1097,8 +1169,8 @@ def test_run():
             apamodel, res = pickle.load(fh)
 
 
-# if __name__=="__main__":
-#     infer_pa("../../test.pkl", ".")
+#if __name__=="__main__":
+#    infer_pa("../test/test_nimh.100.1.1.input.pkl", ".")
 
 
 # if __name__=="__main__":

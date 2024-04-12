@@ -15,11 +15,12 @@ def cli():
 def display_paper_info():
     print()
     print("This software is affiliated with the following paper:")
-    print("Title: Your Paper Title")
-    print("Authors: First Author, Second Author, Third Author")
-    print("Journal: Journal Name")
-    print("Year: 2023")
-    print("DOI: https://doi.org/your-paper-doi")
+    print("SCAPE-APA: a package for estimating alternative polyadenylation events from scRNA-seq data")
+    print(f"Guangzhao Cheng\N{SUPERSCRIPT ONE}, Tien Le\N{SUPERSCRIPT ONE}, Ran Zhou, Lu Cheng\N{SUPERSCRIPT PLUS SIGN}")
+    print("BioRxiv")
+    print("2024")
+    print("https://doi.org/10.1101/2024.03.12.584547")
+    print()
 
 
 cli.add_command(gen_utr_annotation)
