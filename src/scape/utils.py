@@ -489,7 +489,11 @@ def ex_pa_cnt_mat(output_dir: str, res_pkl_file: str):
                 tmp_cnt_df.columns = ["label", "cb_file"]
                 tmp_cnt_df["cnt"] = 1
                 ## count number of read
-                tmp_cnt_df = tmp_cnt_df.pivot_table(index=['label'], columns='cb_file', values='cnt').reset_index()
+                tmp_cnt_df = tmp_cnt_df.pivot_table(index=['label']
+                                                    , columns='cb_file'
+                                                    , values='cnt'
+                                                    , aggfunc='sum'
+                                                   ).reset_index()
                 ## add columns for missing barcode
                 tmp_missing_cb_df = pd.DataFrame(np.zeros((tmp_cnt_df.shape[0]
                                                           , len([col for col in cb_lst if col not in tmp_cnt_df.columns]))
