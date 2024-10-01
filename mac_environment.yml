@@ -108,4 +108,4 @@ dependencies:
       - pygments==2.18.0
       - rich==13.8.1
       - taichi==1.7.2
-      - scape-apa==1.0.3
+      - scape-apa==1.0.4

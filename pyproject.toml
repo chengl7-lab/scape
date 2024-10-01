@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scape-apa"
-version = "1.0.3"
+version = "1.0.4"
 authors = [
   { name="Guangzhao Cheng, Tien Le, Lu Cheng. Department of Computer Science, Aalto University.", email="lu.cheng.ac@gmail.com" },
 ]

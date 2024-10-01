@@ -145,3 +145,7 @@ The data used can be downloaded from [examples](examples/).
 ### Citation 
 
 Guangzhao Cheng, Tien Le, Ran Zhou, and Lu Cheng. SCAPE-APA: a package for estimating alternative polyadenylation events from scRNA-seq data. bioRxiv 2024.03.12.584547; doi: https://doi.org/10.1101/2024.03.12.584547
+
+[comment]: <> (Release commands)
+[comment]: <> (python -m build) 
+[comment]: <> (python3 -m twine upload --repository scape-apa dist/*)

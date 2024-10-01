@@ -263,24 +263,27 @@ def search_utr(gene_type: str, rna_types: tuple, annot_db, output_dir: str):
         except OSError:
             pass
         
-        gene_utr_bed.saveas(os.path.join(output_dir, "check.bed"))
+        #gene_utr_bed.saveas(os.path.join(output_dir, "check.bed"))
 
         ## Processing normal chromosome. For example: chr1 or 1
         
         if not gene.seqid.upper().startswith(("MT", "CHRM", "MITO")):
             ## merge any utr_file that are within 500bp to each other into one utr_file
-            gene_utr_bed = gene_utr_bed.sort().merge(d=500, s=True)
+            gene_utr_bed = gene_utr_bed.sort().merge(d=500, s=True, c='4,5,6', o='first,first,first')
+            # Retain columns 4, 5, and 6 (c='4,5,6')
+            # Use the first value encountered for each of these columns in the merged interval (o='first,first,first')
+            # column names: chrom  start    end name  score strand
 
             ## Processing mitochondrial chromosome
         elif gene.seqid.upper().startswith(("MT", "CHRM", "MITO")):
             ## merge all utrs into one utr_file
-            gene_utr_bed = gene_utr_bed.sort().merge(s=True)
+            gene_utr_bed = gene_utr_bed.sort().merge(s=True, c='4,5,6', o='first,first,first')
         else:
             raise Exception(f"Cannot define if {gene.id} and {gene.seqid} is mitochondrial chromosome or not.")
 
         gene_utr_df = gene_utr_bed.to_dataframe()
         ## current strand is stored in column "name" due to function to_dataframe()
-        gene_utr_df.rename(columns={'name': 'strand'}, inplace=True)
+        #gene_utr_df.rename(columns={'name': 'strand'}, inplace=True)
         
         ## Get gene_id from attributes
         try:
@@ -549,3 +552,11 @@ def ex_pa_cnt_mat(output_dir: str, res_pkl_file: str):
     end_t = timer()
     print(f"Finish writing all in {(end_t - start_t) / 60} min.")
 """"------------------end----------------------------"""
+
+
+# if __name__=="__main__":
+#     gff_file = "Homo_sapiens.GRCh38.98.chr.gff3.gz"
+#     output_dir = "."
+#     res_file_name = "res_file_name"
+#     gff_merge_strategy = "merge"
+#     _gen_utr_annotation(gff_file, output_dir, res_file_name, gff_merge_strategy)
