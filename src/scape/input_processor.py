@@ -11,6 +11,10 @@ from glob import glob
 #from cli.apa_junction import flag_junction_read, proc_junction_pos_read, proc_junction_neg_read
 from .junction_handler import flag_junction_read, proc_junction_pos_read, proc_junction_neg_read
 
+import tomllib
+import tomli_w
+from pathlib import Path
+
 """
 Author: Tien Le
 Date: 22.06.2023
@@ -76,6 +80,41 @@ NOTE:
 #     )
 def prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, chunksize: int, seqtype = "single-cell"):
     _prepare_input(utr_file, cb_file, bam_file, output_dir, chunksize, seqtype)
+
+    toml_file = Path(output_dir) / "parameters.toml"
+
+    if toml_file.exists():
+        with open(toml_file, 'rb') as fh:
+            para_dict = tomllib.load(fh)
+    else:
+        para_dict = {}
+    para_dict["utr_file"] = utr_file
+    para_dict["cb_file"] = cb_file
+    para_dict["bam_file"] = bam_file
+    para_dict["output_dir"] = output_dir
+    para_dict["chunksize"] = chunksize
+
+    para_dict["n_max_apa"] = 5
+    para_dict["n_min_apa"] = 1
+    para_dict["min_LA"] = 20
+    para_dict["max_LA"] = 150
+    para_dict["mu_f"] = 300
+    para_dict["sigma_f"] = 50
+    para_dict["min_pa_gap"] = 100
+    para_dict["max_beta"] = 70
+
+    para_dict["theta_step"] = 9
+    para_dict["beta_step"] = 5
+
+    para_dict["min_ws"] = 0.05
+    para_dict["max_unif_ws"] = 0.15
+    para_dict["re_run_mode"] = True
+    para_dict["fixed_run_mode"] = False
+
+    with open(toml_file, 'wb') as fh:
+        tomli_w.dump(para_dict, fh)
+
+
 
 
 def _prepare_input(utr_file: str, cb_file: str, bam_file: str, output_dir: str, chunksize: int, seqtype = "single-cell"):

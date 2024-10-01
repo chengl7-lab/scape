@@ -1,0 +1,2 @@
+taichi==1.7.2
+scape-apa==1.0.3

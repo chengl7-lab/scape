@@ -2,20 +2,50 @@
 
 ### Installation
 
-#### Environment setup
+#### Method 1
 ```
 conda config --append channels bioconda 
 conda config --append channels conda-forge 
+conda config --append channels anaconda 
 conda create -n scape_env python=3.11
 conda activate scape_env
-```
-#### PyPI installation (recommended)
-Install scape-apa via [pypi](https://pypi.org/project/scape-apa).
-```
+
+conda install anaconda::numpy
+conda install anaconda::scipy
+conda install anaconda::pandas
+conda install anaconda::matplotlib
+conda install anaconda::click
+conda install anaconda::tomli-w
+conda install anaconda::requests
+conda install conda-forge::psutil
+conda install conda-forge::tomli-w
+conda install bioconda::bedtools
+conda install bioconda::pybedtools
+conda install bioconda::pysam
+conda install bioconda::gffutils
+
+pip install taichi
 pip install scape-apa
 ```
-#### Installation from our GitHub repository
+
+#### Method 2
 ```
+# Mac
+conda env create -f mac_environment.yml
+conda activate scape_env
+```
+
+#### Method 3
+```
+# Linux
+conda env create -f linux_environment.yml
+conda activate scape_env
+pip install -r linux_requirements.txt
+```
+
+#### Method 4
+```
+# install locally
 git clone https://github.com/chengl7-lab/scape.git
 cd scape
 pip install .

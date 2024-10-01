@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scape-apa"
-version = "1.0.2"
+version = "1.0.3"
 authors = [
   { name="Guangzhao Cheng, Tien Le, Lu Cheng. Department of Computer Science, Aalto University.", email="lu.cheng.ac@gmail.com" },
 ]
@@ -28,6 +28,7 @@ dependencies = [
   "taichi>=1.5.0",
   "pybedtools>=0.9.0",
   "psutil>=5.9.0",
+  "tomli-w>=1.0.0",
 ]
 
 [project.scripts]

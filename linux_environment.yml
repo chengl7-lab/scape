@@ -1,0 +1,20 @@
+name: scape_env
+channels:
+  - defaults
+  - anaconda
+  - bioconda
+  - conda-forge
+dependencies:
+  - python=3.11
+  - anaconda::scipy=1.13.1
+  - anaconda::numpy=1.26.4
+  - anaconda::pandas=2.2.2
+  - anaconda::matplotlib=3.9.2
+  - anaconda::click=8.1.7
+  - anaconda::tomli-w=1.0.0
+  - anaconda::requests=2.32.3
+  - conda-forge::psutil=6.0.0
+  - bioconda::bedtools=2.31.1
+  - bioconda::pybedtools=0.10.0
+  - bioconda::pysam=0.22.1
+  - bioconda::gffutils=0.13

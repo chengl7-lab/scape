@@ -6,6 +6,7 @@ from timeit import default_timer as timer
 
 import math
 import tomllib
+import tomli_w
 
 import pickle
 import psutil
@@ -22,6 +23,8 @@ import matplotlib.pyplot as plt
 from .taichi_core import loglik_xlr_t_pa, loglik_xlr_t_r_known, loglik_xlr_t_r_unknown, get_loglik_marginal_tensor
 import click
 import os
+from pathlib import Path
+
 
 """
 Author: Lu Cheng
@@ -72,14 +75,18 @@ def infer_pa(pkl_input_file: str, output_dir: str, toml_para_file: str = None, p
     OUTPUT:
     - Pickle file including Parameters for each UTR region
     """
-
+    assert Path(output_dir).exists()
     para_dict = {"n_max_apa": 5, "pre_para_pkl_file": pre_para_pkl_file}
+
+    if toml_para_file is None:
+        toml_para_file = Path(output_dir) / "parameters.toml"
+
     if toml_para_file:
         assert os.path.exists(toml_para_file)
         with open(toml_para_file, "rb") as fh:
             user_para_dict = tomllib.load(fh)
             para_dict.update(user_para_dict)
-        print(f"User defined parameter file {toml_para_file} loaded.")
+        print(f"Parameter file {toml_para_file} loaded.")
         for k, v in user_para_dict.items():
             print(f"{k} = {v}")
         print()
@@ -87,6 +94,12 @@ def infer_pa(pkl_input_file: str, output_dir: str, toml_para_file: str = None, p
     if pre_para_pkl_file:
         assert os.path.exists(pre_para_pkl_file)
         para_dict["fixed_run_mode"] = True
+        para_dict["pre_para_pkl_file"] = pre_para_pkl_file
+        with open(toml_para_file, 'wb') as fh:
+            tomli_w.dump(para_dict, fh)
+
+    if "output_dir" in para_dict:
+        del para_dict["output_dir"]
 
     _infer_pa(pkl_input_file, output_dir, **para_dict)
 
@@ -145,9 +158,7 @@ def infer(pickle_input_file, pickle_output_file, **kwargs):
     :param kwargs: other parameters for apamix
     :return: None
     """
-    print(f"1start inferring APA events from input pickle file = {pickle_input_file}. Output file = {pickle_input_file}")
-    print("hello")
-    print(kwargs)
+    print(f"1 start inferring APA events from input pickle file = {pickle_input_file}. Output file = {pickle_input_file}")
     print(f"{kwargs= }")
     res_lst = []
     with open(pickle_input_file, 'rb') as fh:
